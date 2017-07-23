@@ -1,0 +1,21 @@
+.main-panel{
+    .mdl-card{
+        width: 100%;
+        .mdl-card__title{
+            padding-bottom: 0px;
+            p{
+                padding: 0px;
+                margin: 0px;
+            }
+        }
+    }
+    
+    a{
+        color: rgba(0,0,0,.54);
+        text-decoration: none;
+    }
+
+    a:hover{
+        text-decoration: underline;
+    }
+}

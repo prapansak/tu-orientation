@@ -1,0 +1,11 @@
+@import '../../node_modules/rc-time-picker/assets/index.css';
+
+@import './components/Footer.scss';
+@import './components/MainPanel.scss';
+@import './components/AuditPanel.scss';
+
+@import './views/Home.scss';
+
+body, h1, h2, h3, h4, h5, h6, .mdl-textfield__input, .mdl-button{
+    font-family: 'Kanit', sans-serif;
+}
