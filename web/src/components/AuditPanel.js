@@ -50,7 +50,7 @@ const FOUND = (props) => (
         <div className='sec-1'>
             <h5 className='title'>ยินดีด้วย คุณ {props.name}</h5>
             <h5>ลงทะเบียนในอันดับที่ {props.id} มีสิทธิ์เข้าร่วมกิจกรรม</h5>
-            <div>กิจกรรมงานรับเพื่อนใหม่เวลา 17.00 น. - 23.30 น. ลงทะเบียนได้ตั้งแต่ 15.30 น. - 17.00 น.</div>
+            <div>กิจกรรมงานรับเพื่อนใหม่เวลา 17.30 น. - 23.30 น. ลงทะเบียนได้ตั้งแต่ 15.30 น. - 17.00 น.</div>
             <div className='detail' onClick={()=>{window.location='/'}}><u>อ่านรายละเอียดเพิ่มเติมที่หน้าแรก</u></div>
         </div>
 
@@ -68,17 +68,10 @@ const FOUND = (props) => (
                     />
                 </div>
                 <div className='sub-2'>
-                    <div>
-                        <label >เดินทางกลับด้วยรถโดยสาร ขสมก. (ทางมหาวิทยาลัยจัดเตรียมไว้ให้) : </label>
-                    </div>
                     <div className='radio'>
                         <label className="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" htmlFor="victory">
                             <input name='victory' type="checkbox" id="victory" className="mdl-checkbox__input"  checked={props.victory} onChange={(event)=>props.inputPlaceHandle(event)}/>
-                            <span className="mdl-checkbox__label">ไปอนุเสาวรีย์ชัยสมรภูมิ</span>
-                        </label>
-                        <label className="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" htmlFor="future">
-                            <input name='future' type="checkbox" id="future" className="mdl-checkbox__input"  checked={props.future} onChange={(event)=>props.inputPlaceHandle(event)} />
-                            <span className="mdl-checkbox__label">ไปฟิวเจอร์พาร์ครังสิต</span>
+                            <span className="mdl-checkbox__label">เดินทางกลับด้วยรถโดยสาร ขสมก. ไปอนุเสาวรีย์ชัยสมรภูมิ (ทางมหาวิทยาลัยจัดเตรียมไว้ให้) โดยรถจะออกหลังจบกิจกรรมแล้ว และจอดตามป้ายรถโดยสารประจำทางระหว่างเส้นทางได้</span>
                         </label>
                     </div>
                     <button className="check-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">ส่งข้อมูล</button>
@@ -97,7 +90,6 @@ export default class AuditPanel extends React.Component {
             firstname: '',
             lastname: '',
             date: null,
-            future: false,
             victory: false,
             resultStatus: 'WAITING',
             resultData: {
@@ -122,7 +114,7 @@ export default class AuditPanel extends React.Component {
 
     onInputNameChange(event){
         let value = event.target.value
-        if(value.match(/^([^0-9 ]*)$/)){
+        if(value.match(/^([^0-9]*)$/)){
             this.setState({
                 id: '',
                 [event.target.name]: value,
@@ -132,32 +124,10 @@ export default class AuditPanel extends React.Component {
     }
 
     onInputPlaceChange(event){
-        let { future, victory} = this.state
-        let name = event.target.name
-
-        if(name=='future'){
-            if(victory==true&&future==false){
-                this.setState({
-                    future: (!future),
-                    victory: false
-                })
-            }else{
-                this.setState({
-                    future: (!future)
-                })
-            }
-        }else{
-            if(future==true&&victory==false){
-                this.setState({
-                    future: false,
-                    victory: (!victory)
-                })
-            }else{
-                this.setState({
-                    victory: (!victory)
-                })
-            }
-        }
+        let { victory} = this.state
+        this.setState({
+            victory: (!victory)
+        })
     }
 
     onTimePickerChange(value){
@@ -257,17 +227,16 @@ export default class AuditPanel extends React.Component {
 
     onSendDataFormSubmit(event){
         event.preventDefault()
-        let {date, future, victory, resultData} = this.state
+        let {date, victory, resultData} = this.state
         
-        if(date==null&&future==false&&victory==false){
+        if(date==null&&victory==false){
             this.setState({
                 dialogMsg: 'กรุณาใส่ข้อมูลหมายเหตุ'
             },()=>{
                 this.dialog.showModal()
             })
         }else{
-            let place = (future==true) ? 'ฟิวเจอร์พาร์ครังสิต' : ((victory==true) ? 'อนุเสาวรีย์ชัยสมรภูมิ' : null)
-
+            let place = (victory==true) ? 'อนุเสาวรีย์ชัยสมรภูมิ' : null
             StudentApi.updateGoBackHome(resultData.national_id, date , place).then((response)=>{
                 try{
                     if(response.data!=null){
@@ -287,7 +256,6 @@ export default class AuditPanel extends React.Component {
                 
                 this.setState({
                     date: null,
-                    future: false,
                     victory: false
                 })
             }).catch((e)=>{
@@ -296,7 +264,6 @@ export default class AuditPanel extends React.Component {
                 })
                 this.setState({
                     date: null,
-                    future: false,
                     victory: false
                 })
             })
@@ -304,11 +271,11 @@ export default class AuditPanel extends React.Component {
     }
 
     getResultElement(){
-        let { resultStatus, resultData, future, victory} = this.state
+        let { resultStatus, resultData, victory} = this.state
         switch(resultStatus){
             case 'LOADING'          : return <LOADING/>
             case 'WAITING'          : return <STATUS msg='กรุณากรอกข้อมูลเพื่อตรวจสอบรายชื่อ'/>
-            case 'FOUND'            : return <FOUND id={resultData.id} name={resultData.name} future={future} victory={victory} timePickerHandle={(event)=>this.onTimePickerChange(event)} inputPlaceHandle={(event)=>this.onInputPlaceChange(event)} onSubmitHandle={(event)=>{this.onSendDataFormSubmit(event)}}/>
+            case 'FOUND'            : return <FOUND id={resultData.id} name={resultData.name} victory={victory} timePickerHandle={(event)=>this.onTimePickerChange(event)} inputPlaceHandle={(event)=>this.onInputPlaceChange(event)} onSubmitHandle={(event)=>{this.onSendDataFormSubmit(event)}}/>
             case 'NOT_FOUND'        : return <NOT_FOUND/>
             case 'SUCCESS'          : return <STATUS msg='บันทึกข้อมูลแล้ว'/>
             case 'ERROR'            : return <STATUS msg='พบข้อผิดพลาด กรุณาลองอีกครั้ง'/>

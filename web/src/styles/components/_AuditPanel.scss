@@ -66,6 +66,7 @@
                 }
             }
             .found{
+                margin: 0px 70px 0px 70px;
                 .sec-1{
                     text-align: center;
                     .title{
@@ -84,12 +85,15 @@
                         margin-top: 15px;
                     }
                     .sub-2{
-                        display: flex;
+                        // display: flex;
                         .radio{
-                            width: 225px;
-                            margin-left: 10px;
+                            // width: 225px;
+                            // margin-left: 10px;
                             .mdl-checkbox__label{
                                 font-size: 14px;
+                            }
+                            span{
+                                margin-left: 5px;
                             }
                         }
                     }

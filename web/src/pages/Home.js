@@ -1,6 +1,7 @@
 import React from 'react'
 import MainPanel from '../components/MainPanel'
 import AuditPanel from '../components/AuditPanel'
+import QAPanel from '../components/QAPanel'
 import Footer from '../components/Footer'
 
 export default class Home extends React.Component {
@@ -16,7 +17,6 @@ export default class Home extends React.Component {
                 <div className="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
                     <div className="mdl-tabs__tab-bar">
                         <a href="#home" className="mdl-tabs__tab is-active">หน้าหลัก</a>
-                        <a href="http://sa.tu.ac.th/oth/studenthandbook/member/register.php" target='_blank' className="mdl-tabs__tab">ลงทะเบียนเข้าร่วมกิจกรรม</a>
                         <a href="#audit" className="mdl-tabs__tab">ตรวจสอบรายชื่อ</a>
                         <a href="#qa" className="mdl-tabs__tab">Q&A</a>
                     </div>
@@ -29,7 +29,9 @@ export default class Home extends React.Component {
                         <AuditPanel/>
                     </div>
 
-                    <div className="mdl-tabs__panel" id="qa"></div>
+                    <div className="mdl-tabs__panel" id="qa">
+                        <QAPanel/>
+                    </div>
                 </div>
 
                 <Footer/> 
