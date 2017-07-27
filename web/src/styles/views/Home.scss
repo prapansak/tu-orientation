@@ -1,46 +1,9 @@
-// .home{
-//     width: 889px;
-//     margin: auto;
-    
-//     .mdl-tabs__tab{
-//         display: block;
-//         width: 100%;
-//     }
-//     .mdl-tabs__tab-bar{
-//         display: flex;
-//         flex-direction: row;
-//     }
-
-//     .mdl-grid{
-//         margin: 0px;
-//         padding: 0px;
-//     }
-
-//     .mdl-cell{
-//         padding: 0px;
-//         margin: 0px;
-//         width: 100%;
-//     }
-
-//     .cover{
-//         height: 250px;
-//         margin: 0px;
-//         padding: 0px;
-//     }
-
-//     h3{
-//         text-align: center;
-//     }
-// }
-
-
 .ant-tabs-tab{
-    width: 80%;
+    width: 85%;
     text-align: center;
-    // margin-left: 2px;
 }
 .ant-tabs-ink-bar{
-    width: 80% !important;
+    width: 85% !important;
 }
 .ant-tabs-ink-bar-animated{
     text-align: center;
