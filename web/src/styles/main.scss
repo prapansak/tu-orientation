@@ -1,5 +1,3 @@
-@import '../../node_modules/rc-time-picker/assets/index.css';
-
 @import './components/Footer.scss';
 @import './components/MainPanel.scss';
 @import './components/AuditPanel.scss';
@@ -9,4 +7,30 @@
 
 body, h1, h2, h3, h4, h5, h6, .mdl-textfield__input, .mdl-button{
     font-family: 'Kanit', sans-serif;
+}
+
+
+body{
+    width: 889px;
+    margin: auto;
+}
+
+img{
+    width: 100%;
+    height: 250px;
+}
+
+.header{
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+}
+
+.ant-layout-footer{
+    padding: 0px;
+    background-color: #FFFFFF;
+}
+
+.ant-input{
+    width: 200px;
 }

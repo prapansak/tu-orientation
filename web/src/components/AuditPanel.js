@@ -1,22 +1,13 @@
 import React from 'react'
-import TimePicker from 'rc-time-picker';
-import moment from 'moment';
+import moment from 'moment'
 import axios from 'axios'
 import SearchApi from '../api/SearchApi'
 import StudentApi from '../api/StudentApi'
+import { Input, Button, Modal, TimePicker, } from 'antd'
+
+const ModalWarning = Modal.warning;
 
 const format = 'h:mm a';
-
-const MODAL = (props) => (
-    <dialog className="mdl-dialog">
-        <div className="mdl-dialog__content">
-            <p>{props.msg}</p>
-        </div>
-        <div className="mdl-dialog__actions">
-            <button type="button" className="mdl-button close" onClick={()=>props.closeHandle()}>ปิด</button>
-        </div>
-    </dialog>
-)
 
 const LOADING = (props) => (
     <div className='status'>
@@ -26,19 +17,19 @@ const LOADING = (props) => (
 
 const STATUS = (props) => (
     <div className='status'>
-        <h5>{props.msg}</h5>
+        <h2>{props.msg}</h2>
     </div>
 )
 
 const PENDING = () => (
     <div className='pending'>
-        <h5>กรุณากรอกข้อมูลเพื่อตรวจสอบ</h5>
+        <h2>กรุณากรอกข้อมูลเพื่อตรวจสอบ</h2>
     </div>
 )
 
 const NOT_FOUND = () => (
     <div className='notfound'>
-        <h5>เสียใจด้วยค่ะ คุณลงทะเบียนในลำดับที่เกิน 4,500</h5>
+        <h2>เสียใจด้วยค่ะ คุณลงทะเบียนในลำดับที่เกิน 4,500</h2>
         <div>หากมีข้อผิดพลาดหรือข้อสงสัย กรุณาติดต่อ:</div>
         <div>E-mail: regdomesu@gmail.com</div>
     </div>
@@ -48,24 +39,24 @@ const NOT_FOUND = () => (
 const FOUND = (props) => (
     <div className='found'>
         <div className='sec-1'>
-            <h5 className='title'>ยินดีด้วย คุณ {props.name}</h5>
-            <h5>ลงทะเบียนในอันดับที่ {props.id} มีสิทธิ์เข้าร่วมกิจกรรม</h5>
+            <h2 className='title'>ยินดีด้วย คุณ {props.name}</h2>
+            <h2 className='title'>ลงทะเบียนในอันดับที่ {props.id} มีสิทธิ์เข้าร่วมกิจกรรม</h2>
             <div>กิจกรรมงานรับเพื่อนใหม่เวลา 17.30 น. - 23.30 น. ลงทะเบียนได้ตั้งแต่ 15.30 น. - 17.00 น.</div>
             <div className='detail' onClick={()=>{window.location='/'}}><u>อ่านรายละเอียดเพิ่มเติมที่หน้าแรก</u></div>
         </div>
 
         <div className='sec-2'>
             <div><u>หมายเหตุ</u></div>
-            <form onSubmit={(event)=>props.onSubmitHandle(event)}>
+            <form>
                 <div className='sub-1'>
                     <label >ไม่สะดวกอยู่จนจบกิจกรรม กลับเวลาประมาณ : </label>
+                    <div className='timepicker'>
                     <TimePicker
-                        showSecond={false}
-                        className="xxx"
                         onChange={(event)=>props.timePickerHandle(event)}
                         format={format}
                         use12Hours
                     />
+                    </div>
                 </div>
                 <div className='sub-2'>
                     <div className='radio'>
@@ -74,7 +65,9 @@ const FOUND = (props) => (
                             <span className="mdl-checkbox__label">เดินทางกลับด้วยรถโดยสาร ขสมก. ไปอนุเสาวรีย์ชัยสมรภูมิ (ทางมหาวิทยาลัยจัดเตรียมไว้ให้) โดยรถจะออกหลังจบกิจกรรมแล้ว และจอดตามป้ายรถโดยสารประจำทางระหว่างเส้นทางได้</span>
                         </label>
                     </div>
-                    <button className="check-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">ส่งข้อมูล</button>
+                    <div className='button-sent'>
+                        <Button onClick={(event)=>props.onSubmitHandle(event)}>ส่งข้อมูล</Button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -103,13 +96,20 @@ export default class AuditPanel extends React.Component {
 
     onInputIdChange(event){
         let value = event.target.value
-        if(value.match(/^[0-9]*$/)&&value.length<=13){
+        if(value.match(/^[0-9]*$/)){
             this.setState({
                 id: value,
                 firstname: '',
                 lastname: ''
             })
         }
+    }
+
+    showModal(){
+        Modal.warning({
+            title: 'การแจ้งเตือน',
+            content: this.state.dialogMsg,
+        });
     }
 
     onInputNameChange(event){
@@ -174,37 +174,29 @@ export default class AuditPanel extends React.Component {
             this.setState({
                 dialogMsg: 'กรุณากรอกข้อมูลเพื่อตรวจสอบรายชื่อ'
             }, () => {
-                this.dialog.showModal()
+                this.showModal()
             })
         }else{
             if(id!==''){
-                if(id.length<13){
+                SearchApi.searchById(id).then((response) => {
+                    this.setResponseData(response)
+                }).catch((e) => {
                     this.setState({
-                        dialogMsg: 'กรุณากรอกตัวเลข 13 หลัก'
-                    },()=>{
-                        this.dialog.showModal()
+                        resultStatus: 'ERROR'
                     })
-                }else{
-                    SearchApi.searchById(id).then((response)=>{
-                        this.setResponseData(response)
-                    }).catch((e)=>{
-                        this.setState({
-                            resultStatus: 'ERROR'
-                        })
-                    })
+                })
 
-                    this.setState({
-                        id: '',
-                        firstname: '',
-                        lastname: ''
-                    })
-                }
+                this.setState({
+                    id: '',
+                    firstname: '',
+                    lastname: ''
+                })
             }else{
                 if(firstname===''||lastname===''){
                     this.setState({
                         dialogMsg: 'กรุณากรอกชื่อและนามสกุล'
                     },()=>{
-                        this.dialog.showModal()
+                        this.showModal()
                     })
                 }else{
                     SearchApi.searchByName(firstname, lastname).then((response)=>{
@@ -233,7 +225,7 @@ export default class AuditPanel extends React.Component {
             this.setState({
                 dialogMsg: 'กรุณาใส่ข้อมูลหมายเหตุ'
             },()=>{
-                this.dialog.showModal()
+                this.showModal()
             })
         }else{
             let place = (victory==true) ? 'อนุเสาวรีย์ชัยสมรภูมิ' : null
@@ -283,72 +275,48 @@ export default class AuditPanel extends React.Component {
         }
     }
 
-    componentDidMount(){
-        this.dialog = document.querySelector('dialog');
-        if (!this.dialog.showModal) {
-            dialogPolyfill.registerDialog(this.dialog);
-        }
-    }
-
     render() {
         return (
             <div className='audit-panel'>
-                <div className="mdl-grid">
-                    <div className="mdl-cell mdl-cell--12-col">
-                        <h3>งานรับเพื่อนใหม่ 2560</h3>
-                        <div className="mdl-card">
-                            <div className="mdl-card__title">
-                                <p>ตรวจสอบรายชื่อผู้มีสิทธิ์เข้าร่วมกิจกรรม</p>
-                            </div>
-                            <div className="mdl-card__supporting-text">
-                                <form onSubmit={(event)=>{this.onCheckDataFormSubmit(event)}}>
-                                    <div className='input'>
-                                        <label className='title'>เลขบัตรประชาชน 13 หลัก / Citizen ID / Passport ID :</label>
-                                        <div className="mdl-textfield mdl-js-textfield">
-                                            <input className="mdl-textfield__input" type="text" id="citizen-id" value={this.state.id} onChange={(event)=>this.onInputIdChange(event)}/>
-                                            <label className="mdl-textfield__label" htmlFor="citizen-id"></label>
-                                        </div>
-                                    </div>
+                <div className='header'><h1>งานรับเพื่อนใหม่ 2560</h1></div>
+                <p>ตรวจสอบรายชื่อผู้มีสิทธิ์เข้าร่วมกิจกรรม</p><br/>
 
-                                    <div className='input'>
-                                        <label className='title'>หรือ</label>
-                                        <div className="mdl-textfield mdl-js-textfield"></div>
-                                    </div>
-
-                                    <div className='input'>
-                                        <label className='title'>ชื่อนักศึกษา / First Name :</label>
-                                        <div className="mdl-textfield mdl-js-textfield">
-                                            <input name='firstname' className="mdl-textfield__input" type="text" value={this.state.firstname} onChange={(event)=>this.onInputNameChange(event)} id="firstname" />
-                                            <label className="mdl-textfield__label" htmlFor="firstname"></label>
-                                        </div>
-                                    </div>
-
-                                    <div className='input'>
-                                        <label className='title'>นามสกุลนักศึกษา / Last Name :</label>
-                                        <div className="mdl-textfield mdl-js-textfield">
-                                            <input name='lastname' className="mdl-textfield__input" type="text" value={this.state.lastname} onChange={(event)=>this.onInputNameChange(event)}  id="lastname" />
-                                            <label className="mdl-textfield__label" htmlFor="lastname"></label>
-                                        </div>
-                                    </div>
-
-                                    <button className="check-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-                                        ตรวจสอบ
-                                    </button>
-                                </form>
-                            </div>
+               
+                    <form>
+                        
+                        <div className='input'>
+                            <label className='title'>เลขบัตรประชาชน 13 หลัก / Citizen ID / Passport ID :</label>
+                            <Input value={this.state.id} onChange={(event) => this.onInputIdChange(event)}/>
                         </div>
 
-                        <div className='card-result'>
-                            <div className='card-result-data'>
-                                {
-                                    this.getResultElement()
-                                }
-                            </div>
+                        <div className='input'>
+                            <label className='title'>หรือ</label>
+                        </div>
+
+                        <div className='input'>
+                            <label className='title'>ชื่อนักศึกษา / First Name :</label>
+                            <Input name='firstname' value={this.state.id} value={this.state.firstname} onChange={(event) => this.onInputNameChange(event)}/>
+                        </div>
+
+                        <div className='input'>
+                            <label className='title'>นามสกุลนักศึกษา / Last Name :</label>
+                            <Input name='lastname' value={this.state.id} value={this.state.lastname} onChange={(event) => this.onInputNameChange(event)}/>
+                        </div>
+
+                        <div className='button'>
+                        <Button onClick={(event) => { this.onCheckDataFormSubmit(event) }}>ตรวจสอบ</Button>
+                        </div>
+                    </form>
+
+
+                    <div className='card-result'>
+                        <div className='card-result-data'>
+                            {
+                                this.getResultElement()
+                            }
                         </div>
                     </div>
-                </div>
-
-                <MODAL msg={this.state.dialogMsg} closeHandle={()=>this.dialog.close()}/>
+             
             </div>
         )
     }

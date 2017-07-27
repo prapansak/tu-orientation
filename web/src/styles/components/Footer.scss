@@ -1,0 +1,56 @@
+.footer{
+    border-top: 1pt solid #424242;
+    // margin-top: 5pt;
+    
+    .left,.right{
+        margin: 10pt;
+    }
+
+    .left{
+        float: left;
+        margin-left: 25pt;
+        margin-top: 30px;
+        ul{
+            font-size: 12px;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    .right{
+        float: right;
+        margin-right: 25pt;
+
+        img{
+            width: 90px;
+            height: 90px
+        }
+        .logo{
+            display: flex;
+            align-items: center;
+            margin-right: 10pt;
+        }
+
+        .org{
+            display: flex;
+            text-align: right;
+            .title{
+                font-size: 12px;
+            }
+            .address{
+                font-size: 10px;
+                border-bottom: 2px solid #F44336;
+            }
+            .title-eng{
+                font-size: 10px;
+            }
+            .address-eng{
+                font-size: 10px;
+            }
+            .contact{
+                font-size: 9px;
+            }
+        }
+    }
+}

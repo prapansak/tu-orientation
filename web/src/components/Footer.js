@@ -16,7 +16,7 @@ export default class Footer extends React.Component {
                 <div className='right'>
                     <div className='org'>
                         <div className='logo'>
-                           <img src='/assets/Q4HVGZ4V.jpg' width='100'/>
+                           <img src='/assets/Q4HVGZ4V.jpg'/>
                         </div>
                         <div className='info'>
                             <strong className='title'>องค์การนักศึกษามหาวิทยาลัยธรรมศาสตร์</strong>

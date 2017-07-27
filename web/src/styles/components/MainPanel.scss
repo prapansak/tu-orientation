@@ -1,0 +1,17 @@
+.main-panel{
+    margin-bottom: 50px;
+    ol { 
+        counter-reset: item 
+    }
+    ol > li { 
+        display: block; 
+    }
+    ol > li:before { 
+        content: counters(item, ".") " "; 
+        counter-increment: item 
+    }
+    .pad{
+        margin-left: 15px;
+    }
+    
+}

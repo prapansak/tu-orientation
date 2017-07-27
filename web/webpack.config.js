@@ -1,42 +1,53 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var config = {
-    entry: ['./src/index.js','./src/styles/main.scss'],
+const config = {
+    entry: ['./src/index.js','./src/styles/antd/main.less','./src/styles/main.scss'],
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 include: path.join(__dirname, 'src'),
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015','react']
+                loaders: 'babel-loader',
+                options: {
+                    presets: ['es2015','react'],
+                    plugins: [
+                        ["import", { libraryName: "antd", style: true }]
+                    ]
                 }
             },{
                 test: /\.scss$/,
                 include: path.join(__dirname, 'src'),
-                loaders: [
+                use: [
                     'style-loader',
                     {
                         loader:'css-loader',
-                        query:{
+                        options:{
                             sourceMap: false,
                             module: false
                         }
                     },{
                         loader:'sass-loader',
-                        query:{
+                        options:{
                             sourceMap: false
                         }
                     }
                 ]
+            },{
+                test: /\.less$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: ['css-loader', 'less-loader']
+                })
             }
         ]
     },
     plugins: [
         new webpack.EnvironmentPlugin({
-            NODE_ENV: 'develop'
-        })
+            NODE_ENV: 'development'
+        }),
+        new ExtractTextPlugin('style.css')
     ],
     output: {
         path: path.join(__dirname, 'dist'),
