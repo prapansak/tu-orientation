@@ -22,7 +22,7 @@
     "build": "webpack -p --display-error-details",
     "start": "webpack-dev-server --hot --inline --content-base src",
     "clean-unix": "rm -rf dist",
-    "copy-unix": "mkdir dist && cp src/index.html dist && mkdir dist/assets & cp -r src/assets dist/assets",
+    "copy-unix": "mkdir dist && cp src/index.html dist && mkdir dist/assets && cp -r src/assets dist/assets",
     "prebuild-unix": "npm run clean-unix && npm run copy-unix",
     "build-unix": "webpack -p --display-error-details"
   },
